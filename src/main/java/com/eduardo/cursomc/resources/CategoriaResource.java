@@ -27,16 +27,4 @@ public class CategoriaResource {
 		
 		return ResponseEntity.ok().body(categoria);
 	}
-
-	@RequestMapping(method=RequestMethod.GET)
-	public List<Categoria> listar() {
-		Categoria cat1 = new Categoria(1, "Informatica");
-		Categoria cat2 = new Categoria(2, "Escritorio");
-		
-		List<Categoria> lista = new ArrayList<>();
-		
-		lista.addAll(Arrays.asList(cat1, cat2));
-		
-		return lista;
-	}
 }
