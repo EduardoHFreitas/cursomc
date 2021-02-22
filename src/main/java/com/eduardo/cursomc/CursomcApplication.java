@@ -13,6 +13,7 @@ import com.eduardo.cursomc.domain.Cidade;
 import com.eduardo.cursomc.domain.Cliente;
 import com.eduardo.cursomc.domain.Endereco;
 import com.eduardo.cursomc.domain.Estado;
+import com.eduardo.cursomc.domain.ItemPedido;
 import com.eduardo.cursomc.domain.Pagamento;
 import com.eduardo.cursomc.domain.PagamentoComBoleto;
 import com.eduardo.cursomc.domain.PagamentoComCartao;
@@ -25,6 +26,7 @@ import com.eduardo.cursomc.repositories.CidadeRepository;
 import com.eduardo.cursomc.repositories.ClienteRepository;
 import com.eduardo.cursomc.repositories.EnderecoRepository;
 import com.eduardo.cursomc.repositories.EstadoRepository;
+import com.eduardo.cursomc.repositories.ItemPedidoRepository;
 import com.eduardo.cursomc.repositories.PagamentoRepository;
 import com.eduardo.cursomc.repositories.PedidoRepository;
 import com.eduardo.cursomc.repositories.ProdutoRepository;
@@ -55,6 +57,9 @@ public class CursomcApplication implements CommandLineRunner {
 	
 	@Autowired
 	private PagamentoRepository pagamentoRepository;
+
+	@Autowired
+	private ItemPedidoRepository itemPedidoRepository;
 	
 	public static void main(String[] args) {
 		SpringApplication.run(CursomcApplication.class, args);
@@ -65,16 +70,16 @@ public class CursomcApplication implements CommandLineRunner {
 		Categoria cat1 = new Categoria(null, "Informatica");
 		Categoria cat2 = new Categoria(null, "Escritorio");
 		
-		Produto Prod1 = new Produto(null, "Computador", 2000.00);
-		Produto Prod2 = new Produto(null, "Impressora", 800.00);
-		Produto Prod3 = new Produto(null, "Mouse", 80.00);
+		Produto prod1 = new Produto(null, "Computador", 2000.00);
+		Produto prod2 = new Produto(null, "Impressora", 800.00);
+		Produto prod3 = new Produto(null, "Mouse", 80.00);
 		
-		cat1.getProdutos().addAll(Arrays.asList(Prod1, Prod2, Prod3));
-		cat2.getProdutos().add(Prod2);
+		cat1.getProdutos().addAll(Arrays.asList(prod1, prod2, prod3));
+		cat2.getProdutos().add(prod2);
 		
-		Prod1.getCategorias().add(cat1);
-		Prod2.getCategorias().addAll(Arrays.asList(cat1, cat2));
-		Prod3.getCategorias().add(cat1);
+		prod1.getCategorias().add(cat1);
+		prod2.getCategorias().addAll(Arrays.asList(cat1, cat2));
+		prod3.getCategorias().add(cat1);
 		
 		
 		Estado est1 = new Estado(null, "Minas Gerais");
@@ -108,14 +113,26 @@ public class CursomcApplication implements CommandLineRunner {
 		
 		cliente.getPedidos().addAll(Arrays.asList(ped1, ped2));
 		
+		ItemPedido item1 = new ItemPedido(ped1, prod1, 0.00, 1, prod1.getPreco());
+		ItemPedido item2 = new ItemPedido(ped1, prod2, 0.00, 2, prod2.getPreco());
+		ItemPedido item3 = new ItemPedido(ped2, prod3, 100.00, 1, prod3.getPreco());
+		
+		ped1.getItens().addAll(Arrays.asList(item1, item2));
+		ped2.getItens().add(item3);
+		
+		prod1.getItens().add(item1);
+		prod2.getItens().add(item2);
+		prod3.getItens().add(item3);
+		
 		categoriaRepository.saveAll(Arrays.asList(cat1, cat2));
-		produtoRepository.saveAll(Arrays.asList(Prod1, Prod2, Prod3));
+		produtoRepository.saveAll(Arrays.asList(prod1, prod2, prod3));
 		estadoRepository.saveAll(Arrays.asList(est1, est2));
 		cidadeRepository.saveAll(Arrays.asList(cid1, cid2, cid3));
 		clienteRepository.save(cliente);
 		enderecoRepository.saveAll(Arrays.asList(end1, end2));
 		pedidoRepository.saveAll(Arrays.asList(ped1, ped2));
 		pagamentoRepository.saveAll(Arrays.asList(pag1, pag2));
+		itemPedidoRepository.saveAll(Arrays.asList(item1, item2, item3));
 	}
 
 }
