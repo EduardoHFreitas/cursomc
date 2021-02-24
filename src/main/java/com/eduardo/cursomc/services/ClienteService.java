@@ -71,7 +71,7 @@ public class ClienteService {
 			clienteRepository.deleteById(id);
 		} catch (DataIntegrityViolationException e) {
 			throw new DataIntegrityException(
-					"O cliente " + cliente.getNome() + " nao pode ser excluida pois possui pedidos e/ou enderecos vinculados");
+					"O cliente " + cliente.getNome() + " nao pode ser excluido pois possui pedido(s) vinculado(s)");
 		}
 	}
 
