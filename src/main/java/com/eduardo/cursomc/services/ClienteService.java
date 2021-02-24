@@ -2,6 +2,7 @@ package com.eduardo.cursomc.services;
 
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataIntegrityViolationException;
@@ -11,12 +12,10 @@ import org.springframework.data.domain.Sort.Direction;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import com.eduardo.cursomc.domain.Cidade;
 import com.eduardo.cursomc.domain.Cliente;
 import com.eduardo.cursomc.domain.Endereco;
 import com.eduardo.cursomc.domain.enums.TipoCliente;
 import com.eduardo.cursomc.dto.ClienteDTO;
-import com.eduardo.cursomc.dto.NovoClienteDTO;
 import com.eduardo.cursomc.repositories.ClienteRepository;
 import com.eduardo.cursomc.repositories.EnderecoRepository;
 import com.eduardo.cursomc.services.exceptions.DataIntegrityException;
@@ -53,6 +52,7 @@ public class ClienteService {
 		
 		Cliente clienteSalvo = clienteRepository.save(cliente);
 		
+		cliente.setEnderecos(cliente.getEnderecos().stream().map(e -> e.setCliente(clienteSalvo)).collect(Collectors.toList()));
 		enderecoRepository.saveAll(cliente.getEnderecos());
 		
 		return clienteSalvo;
@@ -76,16 +76,17 @@ public class ClienteService {
 	}
 
 	public Cliente fromDTO(ClienteDTO dto) {
-		return new Cliente(dto.getId(), dto.getNome(), dto.getEmail(), null, null);
-	}
-	
-	public Cliente fromDTO(NovoClienteDTO dto) {
-		Cliente cliente = new Cliente(null, dto.getNome(), dto.getEmail(), dto.getCpfOuCnpj(), TipoCliente.toEnum(dto.getTipo()));
-		Cidade cidade = new Cidade(dto.getCidadeId(), null, null);
-		Endereco endereco = new Endereco(null, dto.getLogradouro(), dto.getNumero(), dto.getComplemento(), dto.getBairro(), dto.getCep(), cliente, cidade );
+		Cliente cliente = new Cliente(dto.getId(), dto.getNome(), dto.getEmail(), dto.getCpfOuCnpj(), TipoCliente.toEnum(dto.getTipo()));
 		
-		cliente.getEnderecos().add(endereco);
-		cliente.getTelefones().addAll(dto.getTelefones());
+		if (!dto.getEnderecos().isEmpty()) {
+			List<Endereco> enderecos = dto.getEnderecos().stream().map(e -> new Endereco(e)).collect(Collectors.toList());
+
+			cliente.getEnderecos().addAll(enderecos);
+		}
+		
+		if (!dto.getTelefones().isEmpty()) {
+			cliente.getTelefones().addAll(dto.getTelefones());
+		}
 		
 		return cliente;
 	}

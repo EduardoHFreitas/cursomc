@@ -9,6 +9,7 @@ import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 
+import com.eduardo.cursomc.dto.EnderecoDTO;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 
 @Entity
@@ -49,6 +50,17 @@ public class Endereco implements Serializable {
 		this.cliente = cliente;
 		this.cidade = cidade;
 	}
+	
+	public Endereco (EnderecoDTO enderecoDTO) {
+		super();
+		this.logradouro = enderecoDTO.getLogradouro();
+		this.numero = enderecoDTO.getNumero();
+		this.complemento = enderecoDTO.getComplemento();
+		this.bairro = enderecoDTO.getBairro();
+		this.cep = enderecoDTO.getCep();
+		this.cidade = new Cidade(enderecoDTO.getCidadeId(), null, null);
+	}
+
 
 	public Integer getId() {
 		return id;
@@ -102,8 +114,9 @@ public class Endereco implements Serializable {
 		return cliente;
 	}
 
-	public void setCliente(Cliente cliente) {
+	public Endereco setCliente(Cliente cliente) {
 		this.cliente = cliente;
+		return this;
 	}
 
 	public Cidade getCidade() {
