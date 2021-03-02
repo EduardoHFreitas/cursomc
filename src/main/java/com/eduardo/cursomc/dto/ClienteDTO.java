@@ -2,7 +2,10 @@ package com.eduardo.cursomc.dto;
 
 import java.io.Serializable;
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
+import java.util.stream.Collectors;
 
 import javax.validation.constraints.Email;
 import javax.validation.constraints.NotEmpty;
@@ -10,13 +13,15 @@ import javax.validation.constraints.NotEmpty;
 import org.hibernate.validator.constraints.Length;
 
 import com.eduardo.cursomc.domain.Cliente;
+import com.eduardo.cursomc.services.validation.ClienteInsertAnnotation;
 
+@ClienteInsertAnnotation
 public class ClienteDTO implements Serializable {
 
 	private static final long serialVersionUID = 1L;
 
 	private Integer id;
-	
+
 	@NotEmpty(message = "O nome do cliente e obrigatorio")
 	@Length(min = 5, max = 80, message = "O nome deve possuir entre 5 e 80 caracteres")
 	private String nome;
@@ -32,17 +37,21 @@ public class ClienteDTO implements Serializable {
 
 	@NotEmpty(message = "O cliente deve possuir ao menos um endereco cadastrado")
 	private List<EnderecoDTO> enderecos = new ArrayList<>();
-	
+
 	@NotEmpty(message = "O cliente deve possuir ao menos um telefone cadastrado")
-	private List<String> telefones = new ArrayList<>();
+	private Set<String> telefones = new HashSet<>();
 
 	public ClienteDTO() {
 	}
-	
+
 	public ClienteDTO(Cliente cliente) {
 		this.id = cliente.getId();
 		this.nome = cliente.getNome();
 		this.email = cliente.getEmail();
+		this.cpfOuCnpj = cliente.getCpfOuCnpj();
+		this.tipo = cliente.getTipo().getCodigo();
+		this.telefones = cliente.getTelefones();
+		setEnderecos(cliente.getEnderecos().stream().map(e -> new EnderecoDTO(e)).collect(Collectors.toList()));
 	}
 
 	public Integer getId() {
@@ -93,11 +102,11 @@ public class ClienteDTO implements Serializable {
 		this.enderecos = enderecos;
 	}
 
-	public List<String> getTelefones() {
+	public Set<String> getTelefones() {
 		return telefones;
 	}
 
-	public void setTelefones(List<String> telefones) {
+	public void setTelefones(Set<String> telefones) {
 		this.telefones = telefones;
 	}
 }

@@ -4,6 +4,8 @@ import java.io.Serializable;
 
 import javax.validation.constraints.NotEmpty;
 
+import com.eduardo.cursomc.domain.Endereco;
+
 public class EnderecoDTO implements Serializable {
 
 	private static final long serialVersionUID = 1L;
@@ -36,6 +38,15 @@ public class EnderecoDTO implements Serializable {
 		this.bairro = bairro;
 		this.cep = cep;
 		this.cidadeId = cidadeId;
+	}
+	
+	public EnderecoDTO(Endereco endereco) {
+		this.logradouro = endereco.getLogradouro();
+		this.numero = endereco.getNumero();
+		this.complemento = endereco.getComplemento();
+		this.bairro = endereco.getBairro();
+		this.cep = endereco.getCep();
+		this.cidadeId = (endereco.getCidade() == null ? null : endereco.getCidade().getId());
 	}
 
 	public String getLogradouro() {
