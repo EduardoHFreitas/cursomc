@@ -16,6 +16,7 @@ import com.eduardo.cursomc.domain.Cliente;
 import com.eduardo.cursomc.domain.Endereco;
 import com.eduardo.cursomc.domain.enums.TipoCliente;
 import com.eduardo.cursomc.dto.ClienteDTO;
+import com.eduardo.cursomc.dto.ClienteUpdateDTO;
 import com.eduardo.cursomc.repositories.ClienteRepository;
 import com.eduardo.cursomc.repositories.EnderecoRepository;
 import com.eduardo.cursomc.services.exceptions.DataIntegrityException;
@@ -89,6 +90,10 @@ public class ClienteService {
 		}
 		
 		return cliente;
+	}
+	
+	public Cliente fromDTO(ClienteUpdateDTO dto) {
+		return new Cliente(null, dto.getNome(), dto.getEmail(), null, null);
 	}
 
 	private void updateData(Cliente clienteSave, Cliente cliente) {

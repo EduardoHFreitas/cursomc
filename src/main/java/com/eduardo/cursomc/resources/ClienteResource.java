@@ -19,6 +19,7 @@ import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
 import com.eduardo.cursomc.domain.Cliente;
 import com.eduardo.cursomc.dto.ClienteDTO;
+import com.eduardo.cursomc.dto.ClienteUpdateDTO;
 import com.eduardo.cursomc.services.ClienteService;
 
 @RestController
@@ -69,7 +70,7 @@ public class ClienteResource {
 	}
 
 	@RequestMapping(value = "/{id}", method = RequestMethod.PUT)
-	public ResponseEntity<Void> update(@PathVariable Integer id, @RequestBody ClienteDTO clienteDTO) {
+	public ResponseEntity<Void> update(@PathVariable Integer id, @Valid @RequestBody ClienteUpdateDTO clienteDTO) {
 		Cliente cliente = clienteService.fromDTO(clienteDTO);
 		
 		cliente.setId(id);
