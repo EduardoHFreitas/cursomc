@@ -76,8 +76,8 @@ public class CursomcApplication implements CommandLineRunner {
 		Categoria cat7 = new Categoria(null, "Perfumaria");
 
 		Produto prod1 = new Produto(null, "Computador", 2000.00);
-		Produto prod2 = new Produto(null, "Impressora", 800.00);
-		Produto prod3 = new Produto(null, "Mouse", 80.00);
+		Produto prod2 = new Produto(null, "Mouse", 80.00);
+		Produto prod3 = new Produto(null, "Impressora", 800.00);
 		Produto prod4 = new Produto(null, "Mesa de escritório", 300.00);
 		Produto prod5 = new Produto(null, "Toalha", 50.00);
 		Produto prod6 = new Produto(null, "Colcha", 200.00);

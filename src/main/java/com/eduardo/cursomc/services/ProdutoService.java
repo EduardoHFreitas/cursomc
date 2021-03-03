@@ -33,7 +33,6 @@ public class ProdutoService {
 		return produto.orElseThrow(() -> new ObjectNotFoundException(
 				"Objeto não encontrado! Id: " + id + ", Tipo: " + Produto.class.getName()));	
 	}
-	
 
 	public Page<Produto> search(String nome, List<Integer> idsCategorias, Integer page, Integer size, String orderBy, String direction) {
 		PageRequest pageRequest = PageRequest.of(page, size, Direction.valueOf(direction), orderBy);
