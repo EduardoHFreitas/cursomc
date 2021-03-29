@@ -12,20 +12,19 @@ import com.eduardo.cursomc.domain.Categoria;
 import com.eduardo.cursomc.domain.Cidade;
 import com.eduardo.cursomc.domain.Cliente;
 import com.eduardo.cursomc.domain.Endereco;
-import com.eduardo.cursomc.domain.Estado;
 import com.eduardo.cursomc.domain.ItemPedido;
 import com.eduardo.cursomc.domain.Pagamento;
 import com.eduardo.cursomc.domain.PagamentoComBoleto;
 import com.eduardo.cursomc.domain.PagamentoComCartao;
 import com.eduardo.cursomc.domain.Pedido;
 import com.eduardo.cursomc.domain.Produto;
+import com.eduardo.cursomc.domain.enums.Estado;
 import com.eduardo.cursomc.domain.enums.EstadoPagamento;
 import com.eduardo.cursomc.domain.enums.TipoCliente;
 import com.eduardo.cursomc.repositories.CategoriaRepository;
 import com.eduardo.cursomc.repositories.CidadeRepository;
 import com.eduardo.cursomc.repositories.ClienteRepository;
 import com.eduardo.cursomc.repositories.EnderecoRepository;
-import com.eduardo.cursomc.repositories.EstadoRepository;
 import com.eduardo.cursomc.repositories.ItemPedidoRepository;
 import com.eduardo.cursomc.repositories.PagamentoRepository;
 import com.eduardo.cursomc.repositories.PedidoRepository;
@@ -39,9 +38,6 @@ public class CursomcApplication implements CommandLineRunner {
 
 	@Autowired
 	private ProdutoRepository produtoRepository;
-
-	@Autowired
-	private EstadoRepository estadoRepository;
 
 	@Autowired
 	private CidadeRepository cidadeRepository;
@@ -107,15 +103,9 @@ public class CursomcApplication implements CommandLineRunner {
 		prod10.getCategorias().addAll(Arrays.asList(cat6));
 		prod11.getCategorias().addAll(Arrays.asList(cat7));
 
-		Estado est1 = new Estado(null, "Minas Gerais");
-		Estado est2 = new Estado(null, "Sao Paulo");
-
-		Cidade cid1 = new Cidade(null, "Uberlandia", est1);
-		Cidade cid2 = new Cidade(null, "Sao Paulo", est2);
-		Cidade cid3 = new Cidade(null, "Campinas", est2);
-
-		est1.getCidades().add(cid1);
-		est2.getCidades().addAll(Arrays.asList(cid2, cid3));
+		Cidade cid1 = new Cidade(null, "Uberlandia", Estado.MG);
+		Cidade cid2 = new Cidade(null, "Sao Paulo", Estado.SP);
+		Cidade cid3 = new Cidade(null, "Campinas", Estado.SP);
 
 		Cliente cliente = new Cliente(null, "Maria Silva", "maria@gmail.com", "123456789", TipoCliente.PESSOA_FISICA);
 		cliente.getTelefones().addAll(Arrays.asList("33223311", "33223322"));
@@ -151,7 +141,6 @@ public class CursomcApplication implements CommandLineRunner {
 
 		categoriaRepository.saveAll(Arrays.asList(cat1, cat2, cat2, cat3, cat4, cat5, cat6, cat7));
 		produtoRepository.saveAll(Arrays.asList(prod1, prod2, prod3, prod4, prod5, prod6, prod7, prod8, prod9, prod10, prod11));
-		estadoRepository.saveAll(Arrays.asList(est1, est2));
 		cidadeRepository.saveAll(Arrays.asList(cid1, cid2, cid3));
 		clienteRepository.save(cliente);
 		enderecoRepository.saveAll(Arrays.asList(end1, end2));
