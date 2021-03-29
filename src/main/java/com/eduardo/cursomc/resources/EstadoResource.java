@@ -30,10 +30,10 @@ public class EstadoResource {
 		return ResponseEntity.ok().body(estadosDTO);
 	}
 	
-	@RequestMapping(value = "/{id}", method = RequestMethod.GET)
-	public ResponseEntity<Estado> findByCodigo(@PathVariable Integer codigo) {
+	@RequestMapping(value = "/{codigo}", method = RequestMethod.GET)
+	public ResponseEntity<EstadoDTO> findByCodigo(@PathVariable Integer codigo) {
 		Estado estado = estadoService.findByCodigo(codigo);
 
-		return ResponseEntity.ok().body(estado);
+		return ResponseEntity.ok().body(new EstadoDTO(estado));
 	}
 }
