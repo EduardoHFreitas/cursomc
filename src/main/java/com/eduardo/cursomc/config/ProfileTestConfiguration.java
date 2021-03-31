@@ -9,6 +9,8 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Profile;
 
 import com.eduardo.cursomc.services.DatabaseService;
+import com.eduardo.cursomc.services.IEmailService;
+import com.eduardo.cursomc.services.mock.MockEmailService;
 
 @Configuration
 @Profile("test")
@@ -27,5 +29,10 @@ public class ProfileTestConfiguration {
 		}
 		
 		return true;
+	}
+	
+	@Bean
+	public IEmailService emailService() {
+		return new MockEmailService();
 	}
 }
