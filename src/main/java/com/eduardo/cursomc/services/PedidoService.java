@@ -78,7 +78,7 @@ public class PedidoService {
 		pagamentoRepository.save(pedido.getPagamento());
 		itemPedidoRepository.saveAll(pedido.getItens());
 
-		emailService.sendOrderConfirmationEmail(pedido);
+		emailService.sendOrderConfirmationHTMLEmail(pedido);
 		
 		return pedido;
 	}
