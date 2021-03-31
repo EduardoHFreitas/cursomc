@@ -101,7 +101,7 @@ public class DatabaseService {
 		Cidade cid2 = new Cidade(null, "Sao Paulo", Estado.SP);
 		Cidade cid3 = new Cidade(null, "Campinas", Estado.SP);
 
-		Cliente cliente = new Cliente(null, "Maria Silva", "maria@gmail.com", "123456789", TipoCliente.PESSOA_FISICA);
+		Cliente cliente = new Cliente(null, "Maria Silva", "duh.henrike@gmail.com", "123456789", TipoCliente.PESSOA_FISICA);
 		cliente.getTelefones().addAll(Arrays.asList("33223311", "33223322"));
 
 		Endereco end1 = new Endereco(null, "Rua Flores", "300", "apt 303", "Jardim", "35305301", cliente, cid1);
