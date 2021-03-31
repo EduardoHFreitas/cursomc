@@ -11,7 +11,7 @@ import org.springframework.context.annotation.Profile;
 import com.eduardo.cursomc.services.DatabaseService;
 
 @Configuration
-@Profile("test")
+@Profile("dev")
 public class ProfileDevConfiguration {
 
 	@Autowired
@@ -25,7 +25,6 @@ public class ProfileDevConfiguration {
 		if (strategy.equals("create")) {
 			databaseService.instantiateDatabase();
 		}
-		
 		
 		return true;
 	}

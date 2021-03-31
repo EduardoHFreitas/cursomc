@@ -1,8 +1,11 @@
 package com.eduardo.cursomc.domain;
 
 import java.io.Serializable;
+import java.text.NumberFormat;
+import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.HashSet;
+import java.util.Locale;
 import java.util.Set;
 
 import javax.persistence.CascadeType;
@@ -106,6 +109,29 @@ public class Pedido implements Serializable {
 		return itens.stream().mapToDouble(i -> i.getSubTotal()).sum();
 	}
 	
+	@Override
+	public String toString() {
+		NumberFormat nf = NumberFormat.getCurrencyInstance(new Locale("pt", "BR"));
+		SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy hh:mm:ss");
+		
+		StringBuilder builder = new StringBuilder();
+		builder.append("Pedido Numero: ");
+		builder.append(getId());
+		builder.append("\nInstante: ");
+		builder.append(sdf.format(getInstante()));
+		builder.append("\nCliente: ");
+		builder.append(getCliente().getNome());
+		builder.append("\nSituação do pagamento: ");
+		builder.append(getPagamento().getEstado().getDescricao());
+		builder.append("\nItens:\n");
+		for (ItemPedido i: getItens()) {
+			builder.append(i.toString());
+		}
+		builder.append("Valor total: ");
+		builder.append(nf.format(getValorTotal()));
+		return builder.toString();
+	}
+
 	@Override
 	public int hashCode() {
 		final int prime = 31;

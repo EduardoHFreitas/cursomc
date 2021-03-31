@@ -10,6 +10,7 @@ import org.springframework.transaction.annotation.Transactional;
 import com.eduardo.cursomc.domain.ItemPedido;
 import com.eduardo.cursomc.domain.PagamentoComBoleto;
 import com.eduardo.cursomc.domain.Pedido;
+import com.eduardo.cursomc.domain.Produto;
 import com.eduardo.cursomc.domain.enums.EstadoPagamento;
 import com.eduardo.cursomc.repositories.ItemPedidoRepository;
 import com.eduardo.cursomc.repositories.PagamentoRepository;
@@ -33,6 +34,9 @@ public class PedidoService {
 
 	@Autowired
 	private ProdutoService produtoService;
+
+	@Autowired
+	private ClienteService clienteService;
 	
 	public Pedido findById(Integer id) {
 		Optional<Pedido> pedido = pedidoRepository.findById(id);
@@ -46,6 +50,7 @@ public class PedidoService {
 		pedido.setInstante(new Date());
 		pedido.getPagamento().setEstado(EstadoPagamento.PENDENTE);
 		pedido.getPagamento().setPedido(pedido);
+		pedido.setCliente(clienteService.findById(pedido.getCliente().getId()));
 		
 		if (pedido.getPagamento() instanceof PagamentoComBoleto) {
 			PagamentoComBoleto pagamento = (PagamentoComBoleto) pedido.getPagamento();
@@ -60,13 +65,17 @@ public class PedidoService {
 				item.setDesconto(0.00);
 			}
 			
-			item.setPreco(produtoService.findById(item.getProduto().getId()).getPreco());
+			Produto produto = produtoService.findById(item.getProduto().getId());
+			item.setPreco(produto.getPreco());
+			item.setProduto(produto);
 			item.setPedido(pedido);
 		}
 		
 		pedido = pedidoRepository.save(pedido);
 		pagamentoRepository.save(pedido.getPagamento());
 		itemPedidoRepository.saveAll(pedido.getItens());
+		
+		System.out.println(pedido);
 		
 		return pedido;
 	}
