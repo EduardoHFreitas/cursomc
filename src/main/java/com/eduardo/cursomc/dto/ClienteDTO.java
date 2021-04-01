@@ -43,6 +43,9 @@ public class ClienteDTO implements Serializable {
 
 	@NotEmpty(message = "O cliente deve possuir ao menos um telefone cadastrado")
 	private Set<String> telefones = new HashSet<>();
+	
+	@NotEmpty(message = "O cliente deve possuir ao menos um perfil")
+	private Set<Integer> perfis = new HashSet<>();
 
 	public ClienteDTO() {
 	}
@@ -55,6 +58,7 @@ public class ClienteDTO implements Serializable {
 		this.tipo = cliente.getTipo().getCodigo();
 		this.senha = cliente.getSenha();
 		this.telefones = cliente.getTelefones();
+		this.perfis = cliente.getPerfis().stream().map(p -> p.getCodigo()).collect(Collectors.toSet());
 		setEnderecos(cliente.getEnderecos().stream().map(e -> new EnderecoDTO(e)).collect(Collectors.toList()));
 	}
 
@@ -109,7 +113,6 @@ public class ClienteDTO implements Serializable {
 	public List<EnderecoDTO> getEnderecos() {
 		return enderecos;
 	}
-
 	public void setEnderecos(List<EnderecoDTO> enderecos) {
 		this.enderecos = enderecos;
 	}
@@ -120,5 +123,13 @@ public class ClienteDTO implements Serializable {
 
 	public void setTelefones(Set<String> telefones) {
 		this.telefones = telefones;
+	}
+	
+	public Set<Integer> getPerfis() {
+		return perfis;
+	}
+
+	public void setPerfis(Set<Integer> perfis) {
+		this.perfis = perfis;
 	}
 }

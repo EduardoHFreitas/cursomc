@@ -29,6 +29,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 	
 	private static final String[] PUBLIC_READ_MATCHERS = {
 			"/produtos/**",
+			"/clientes/**",
 			"/categorias/**"
 	};
 	

@@ -20,6 +20,7 @@ import com.eduardo.cursomc.domain.Pedido;
 import com.eduardo.cursomc.domain.Produto;
 import com.eduardo.cursomc.domain.enums.Estado;
 import com.eduardo.cursomc.domain.enums.EstadoPagamento;
+import com.eduardo.cursomc.domain.enums.Perfil;
 import com.eduardo.cursomc.domain.enums.TipoCliente;
 import com.eduardo.cursomc.repositories.CategoriaRepository;
 import com.eduardo.cursomc.repositories.CidadeRepository;
@@ -105,9 +106,15 @@ public class DatabaseService {
 		Cidade cid2 = new Cidade(null, "Sao Paulo", Estado.SP);
 		Cidade cid3 = new Cidade(null, "Campinas", Estado.SP);
 
-		String senha = bCryptPasswordEncoder.encode("123");
+		Cliente admin = new Cliente(null, "admin", "email@mail.com", "123456789", TipoCliente.PESSOA_FISICA, bCryptPasswordEncoder.encode("admin"));
+		admin.getTelefones().addAll(Arrays.asList("00000000", "11111111"));
+		admin.addPerfis(Perfil.ADMIN);
 		
-		Cliente cliente = new Cliente(null, "Maria Silva", "duh.henrike@gmail.com", "123456789", TipoCliente.PESSOA_FISICA, senha);
+		Endereco endereco = new Endereco(null, "null", "0", "", "", "", admin, cid1);
+
+		admin.getEnderecos().addAll(Arrays.asList(endereco));
+
+		Cliente cliente = new Cliente(null, "Maria Silva", "duh.henrike@gmail.com", "123456789", TipoCliente.PESSOA_FISICA, bCryptPasswordEncoder.encode("123"));
 		cliente.getTelefones().addAll(Arrays.asList("33223311", "33223322"));
 
 		Endereco end1 = new Endereco(null, "Rua Flores", "300", "apt 303", "Jardim", "35305301", cliente, cid1);
@@ -142,8 +149,8 @@ public class DatabaseService {
 		categoriaRepository.saveAll(Arrays.asList(cat1, cat2, cat2, cat3, cat4, cat5, cat6, cat7));
 		produtoRepository.saveAll(Arrays.asList(prod1, prod2, prod3, prod4, prod5, prod6, prod7, prod8, prod9, prod10, prod11));
 		cidadeRepository.saveAll(Arrays.asList(cid1, cid2, cid3));
-		clienteRepository.save(cliente);
-		enderecoRepository.saveAll(Arrays.asList(end1, end2));
+		clienteRepository.saveAll(Arrays.asList(cliente, admin));
+		enderecoRepository.saveAll(Arrays.asList(end1, end2, endereco));
 		pedidoRepository.saveAll(Arrays.asList(ped1, ped2));
 		pagamentoRepository.saveAll(Arrays.asList(pag1, pag2));
 		itemPedidoRepository.saveAll(Arrays.asList(item1, item2, item3));
