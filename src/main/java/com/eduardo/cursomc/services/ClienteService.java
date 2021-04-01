@@ -9,6 +9,7 @@ import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort.Direction;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -31,6 +32,9 @@ public class ClienteService {
 	@Autowired
 	private EnderecoRepository enderecoRepository;
 
+	@Autowired
+	private BCryptPasswordEncoder bCryptPasswordEncoder;
+	
 	public List<Cliente> findAll() {
 		return clienteRepository.findAll();
 	}
@@ -77,7 +81,9 @@ public class ClienteService {
 	}
 
 	public Cliente fromDTO(ClienteDTO dto) {
-		Cliente cliente = new Cliente(dto.getId(), dto.getNome(), dto.getEmail(), dto.getCpfOuCnpj(), TipoCliente.toEnum(dto.getTipo()));
+		String senha = bCryptPasswordEncoder.encode(dto.getSenha());
+		
+		Cliente cliente = new Cliente(dto.getId(), dto.getNome(), dto.getEmail(), dto.getCpfOuCnpj(), TipoCliente.toEnum(dto.getTipo()), senha);
 		
 		if (!dto.getEnderecos().isEmpty()) {
 			List<Endereco> enderecos = dto.getEnderecos().stream().map(e -> new Endereco(e)).collect(Collectors.toList());
@@ -93,7 +99,7 @@ public class ClienteService {
 	}
 	
 	public Cliente fromDTO(ClienteUpdateDTO dto) {
-		return new Cliente(null, dto.getNome(), dto.getEmail(), null, null);
+		return new Cliente(null, dto.getNome(), dto.getEmail(), null, null, null);
 	}
 
 	private void updateData(Cliente clienteSave, Cliente cliente) {

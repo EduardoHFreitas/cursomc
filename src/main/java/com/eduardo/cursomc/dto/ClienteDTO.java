@@ -30,10 +30,13 @@ public class ClienteDTO implements Serializable {
 	@Email(message = "Email invalido")
 	private String email;
 
-	@NotEmpty(message = "o CPF/CNPJ e obrigatorio")
+	@NotEmpty(message = "O CPF/CNPJ e obrigatorio")
 	private String cpfOuCnpj;
 
 	private Integer tipo;
+	
+	@NotEmpty(message = "A senha e obrigatoria")
+	private String senha;
 
 	@NotEmpty(message = "O cliente deve possuir ao menos um endereco cadastrado")
 	private List<EnderecoDTO> enderecos = new ArrayList<>();
@@ -50,6 +53,7 @@ public class ClienteDTO implements Serializable {
 		this.email = cliente.getEmail();
 		this.cpfOuCnpj = cliente.getCpfOuCnpj();
 		this.tipo = cliente.getTipo().getCodigo();
+		this.senha = cliente.getSenha();
 		this.telefones = cliente.getTelefones();
 		setEnderecos(cliente.getEnderecos().stream().map(e -> new EnderecoDTO(e)).collect(Collectors.toList()));
 	}
@@ -92,6 +96,14 @@ public class ClienteDTO implements Serializable {
 
 	public void setTipo(Integer tipo) {
 		this.tipo = tipo;
+	}
+
+	public String getSenha() {
+		return senha;
+	}
+
+	public void setSenha(String senha) {
+		this.senha = senha;
 	}
 
 	public List<EnderecoDTO> getEnderecos() {
