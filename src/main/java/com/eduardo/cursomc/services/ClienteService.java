@@ -89,6 +89,10 @@ public class ClienteService {
 		}
 	}
 
+	public Cliente findByEmail(String email) {
+		return clienteRepository.findByEmail(email);
+	}
+	
 	public Cliente fromDTO(ClienteDTO dto) {
 		String senha = bCryptPasswordEncoder.encode(dto.getSenha());
 		

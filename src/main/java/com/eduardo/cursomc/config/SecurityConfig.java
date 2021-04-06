@@ -42,6 +42,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 	};
 
 	private static final String[] PUBLIC_POST_MATCHERS = {
+			"/auth/forgot/**",
 			"/clientes/**"
 	};
 	
@@ -60,10 +61,9 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 		http.cors().and().csrf().disable();
 		http.authorizeRequests()
 				.antMatchers(HttpMethod.GET, PUBLIC_READ_MATCHERS).permitAll()
-				.antMatchers(HttpMethod.GET, PUBLIC_POST_MATCHERS).permitAll()
+				.antMatchers(HttpMethod.POST, PUBLIC_POST_MATCHERS).permitAll()
 				.antMatchers(PUBLIC_MATCHERS).permitAll()
-				.anyRequest()
-				.authenticated();
+				.anyRequest().authenticated();
 		http.addFilter(new JWTAuthenticationFilter(authenticationManager(), jwtUtil));
 		http.addFilter(new JWTAuthorizationFilter(authenticationManager(), jwtUtil, userDetailsService));
 		http.sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS);
