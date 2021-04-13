@@ -14,6 +14,7 @@ import org.springframework.web.multipart.MultipartFile;
 
 import com.amazonaws.services.s3.AmazonS3;
 import com.amazonaws.services.s3.model.ObjectMetadata;
+import com.eduardo.cursomc.services.exceptions.FileException;
 
 @Service
 public class S3Service {
@@ -35,7 +36,7 @@ public class S3Service {
 
 			return uploadFile(stream, fileName, contentType);
 		} catch (IOException e) {
-			throw new RuntimeException("Erro na Entrada de Dados.");
+			throw new FileException("Erro na Entrada de Dados: " + e.getMessage());
 		}
 	}
 
@@ -49,7 +50,7 @@ public class S3Service {
 			log.info("Iniciando Upload");
 			return s3Client.getUrl(bucket, fileName).toURI();
 		} catch (URISyntaxException e) {
-			throw new RuntimeException("Erro ao converter URL para URI.");
+			throw new FileException("Erro ao converter URL para URI.");
 		}
 	}
 }
