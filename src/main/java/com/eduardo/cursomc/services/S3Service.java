@@ -1,41 +1,55 @@
 package com.eduardo.cursomc.services;
 
-import java.io.File;
+import java.io.IOException;
+import java.io.InputStream;
+import java.net.URI;
+import java.net.URISyntaxException;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
+import org.springframework.web.multipart.MultipartFile;
 
-import com.amazonaws.AmazonClientException;
-import com.amazonaws.AmazonServiceException;
 import com.amazonaws.services.s3.AmazonS3;
-import com.amazonaws.services.s3.model.PutObjectRequest;
+import com.amazonaws.services.s3.model.ObjectMetadata;
 
 @Service
 public class S3Service {
 
 	@Autowired
 	private AmazonS3 s3Client;
-	
+
 	@Value("${s3.bucket}")
 	private String bucket;
-	
+
 	private Logger log = LoggerFactory.getLogger(S3Service.class);
-	
-	public void uploadFile(String localFilePath) {
-		File file = new File(localFilePath);
-		
+
+	public URI uploadFile(MultipartFile file) {
 		try {
+			InputStream stream = file.getInputStream();
+
+			String fileName = file.getOriginalFilename();
+			String contentType = file.getContentType();
+
+			return uploadFile(stream, fileName, contentType);
+		} catch (IOException e) {
+			throw new RuntimeException("Erro na Entrada de Dados.");
+		}
+	}
+
+	public URI uploadFile(InputStream inputStream, String fileName, String contentType) {
+		try {
+			ObjectMetadata objectMetadata = new ObjectMetadata();
+			objectMetadata.setContentType(contentType);
+
+			s3Client.putObject(bucket, fileName, inputStream, objectMetadata);
+
 			log.info("Iniciando Upload");
-			s3Client.putObject(new PutObjectRequest(bucket, "teste.png", file));
-			log.info("Upload finalizado");
-		} catch (AmazonServiceException e) {
-			log.info("AmazonServiceException: " + e.getErrorMessage());
-			log.info("Status Code: " + e .getErrorCode());
-		} catch (AmazonClientException e) {
-			log.info("AmazonClientException: " + e.getMessage());
+			return s3Client.getUrl(bucket, fileName).toURI();
+		} catch (URISyntaxException e) {
+			throw new RuntimeException("Erro ao converter URL para URI.");
 		}
 	}
 }

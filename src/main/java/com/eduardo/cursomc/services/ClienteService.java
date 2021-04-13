@@ -1,5 +1,6 @@
 package com.eduardo.cursomc.services;
 
+import java.net.URI;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -12,6 +13,7 @@ import org.springframework.data.domain.Sort.Direction;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.multipart.MultipartFile;
 
 import com.eduardo.cursomc.domain.Cliente;
 import com.eduardo.cursomc.domain.Endereco;
@@ -37,6 +39,9 @@ public class ClienteService {
 
 	@Autowired
 	private BCryptPasswordEncoder bCryptPasswordEncoder;
+	
+	@Autowired
+	private S3Service s3Service;
 	
 	public List<Cliente> findAll() {
 		return clienteRepository.findAll();
@@ -91,6 +96,10 @@ public class ClienteService {
 
 	public Cliente findByEmail(String email) {
 		return clienteRepository.findByEmail(email);
+	}
+	
+	public URI uploadProfilePicture(MultipartFile multipartFile) {
+		return s3Service.uploadFile(multipartFile);
 	}
 	
 	public Cliente fromDTO(ClienteDTO dto) {
