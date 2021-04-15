@@ -27,6 +27,10 @@ public class CidadeService {
 		return cidadeRepository.findAll();
 	}
 	
+	public List<Cidade> findAllByEstado(Integer estado_id) {
+		return cidadeRepository.findByEstado(estado_id);
+	}
+	
 	public Page<Cidade> findPaged(Integer page, Integer size, String orderBy, String direction) {
 		PageRequest pageRequest = PageRequest.of(page, size, Direction.valueOf(direction), orderBy);
 		

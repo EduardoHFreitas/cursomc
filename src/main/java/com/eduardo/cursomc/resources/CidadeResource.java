@@ -28,7 +28,7 @@ public class CidadeResource {
 
 	@Autowired
 	private CidadeService cidadeService;
-
+	
 	@RequestMapping(method = RequestMethod.GET)
 	public ResponseEntity<List<CidadeDTO>> findAll() {
 		List<Cidade> cidades = cidadeService.findAll();
@@ -37,14 +37,23 @@ public class CidadeResource {
 		
 		return ResponseEntity.ok().body(cidadesDTO);
 	}
+
+	@RequestMapping(value = "/{estado_id}", method = RequestMethod.GET)
+	public ResponseEntity<List<CidadeDTO>> findAllByEstado(@PathVariable Integer estado_id) {
+		List<Cidade> cidades = cidadeService.findAllByEstado(estado_id);
+		
+		List<CidadeDTO> cidadesDTO = cidades.stream().map(c -> new CidadeDTO(c)).collect(Collectors.toList());
+		
+		return ResponseEntity.ok().body(cidadesDTO);
+	}
 	
 	@RequestMapping(value = "/paged", method = RequestMethod.GET)
-	public ResponseEntity<Page<CidadeDTO>> findPaged(@RequestParam(value="page", defaultValue="0") Integer page, 
-														@RequestParam(value="size", defaultValue="24") Integer size, 
-														@RequestParam(value="orderBy", defaultValue="nome") String orderBy, 
-														@RequestParam(value="direction", defaultValue="ASC") String direction)  {
+	public ResponseEntity<Page<CidadeDTO>> findPagedByEstado(@RequestParam(value="page", defaultValue="0") Integer page, 
+												     		 @RequestParam(value="size", defaultValue="24") Integer size, 
+												     		 @RequestParam(value="orderBy", defaultValue="nome") String orderBy, 
+												     		 @RequestParam(value="direction", defaultValue="ASC") String direction)  {
 		
-		Page<Cidade> findPaged = cidadeService.findPaged(page, size, orderBy, direction);
+		Page<Cidade> findPaged = cidadeService.findPaged(page, size, orderBy, direction); 
 		
 		Page<CidadeDTO> cidadesDTO = findPaged.map(c -> new CidadeDTO(c));
 		

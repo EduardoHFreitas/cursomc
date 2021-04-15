@@ -10,8 +10,11 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.eduardo.cursomc.domain.Cidade;
 import com.eduardo.cursomc.domain.enums.Estado;
+import com.eduardo.cursomc.dto.CidadeDTO;
 import com.eduardo.cursomc.dto.EstadoDTO;
+import com.eduardo.cursomc.services.CidadeService;
 import com.eduardo.cursomc.services.EstadoService;
 
 @RestController
@@ -20,6 +23,9 @@ public class EstadoResource {
 
 	@Autowired
 	private EstadoService estadoService;
+
+	@Autowired
+	private CidadeService cidadeService;
 
 	@RequestMapping(method = RequestMethod.GET)
 	public ResponseEntity<List<EstadoDTO>> findAll() {
@@ -35,5 +41,14 @@ public class EstadoResource {
 		Estado estado = estadoService.findByCodigo(codigo);
 
 		return ResponseEntity.ok().body(new EstadoDTO(estado));
+	}
+	
+	@RequestMapping(value = "/{codigo}/cidades", method = RequestMethod.GET)
+	public ResponseEntity<List<CidadeDTO>>  findCidades(@PathVariable Integer codigo) {
+		List<Cidade> cidades = cidadeService.findAllByEstado(codigo);
+		
+		List<CidadeDTO> cidadesDTO = cidades.stream().map(c -> new CidadeDTO(c)).collect(Collectors.toList());
+		
+		return ResponseEntity.ok().body(cidadesDTO);
 	}
 }
