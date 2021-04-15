@@ -106,7 +106,7 @@ public class DatabaseService {
 		Cidade cid2 = new Cidade(null, "Sao Paulo", Estado.SP);
 		Cidade cid3 = new Cidade(null, "Campinas", Estado.SP);
 
-		Cliente admin = new Cliente(null, "admin", "email@mail.com", "123456789", TipoCliente.PESSOA_FISICA, bCryptPasswordEncoder.encode("admin"));
+		Cliente admin = new Cliente(null, "admin", "admin@gmail.com", "123456789", TipoCliente.PESSOA_FISICA, bCryptPasswordEncoder.encode("admin"));
 		admin.getTelefones().addAll(Arrays.asList("00000000", "11111111"));
 		admin.addPerfis(Perfil.ADMIN);
 		

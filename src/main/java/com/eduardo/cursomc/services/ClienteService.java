@@ -35,25 +35,25 @@ public class ClienteService {
 
 	@Autowired
 	private ClienteRepository clienteRepository;
-	
+
 	@Autowired
 	private EnderecoRepository enderecoRepository;
 
 	@Autowired
 	private BCryptPasswordEncoder bCryptPasswordEncoder;
-	
+
 	@Autowired
 	private S3Service s3Service;
-	
+
 	@Autowired
 	private ImageService imageService;
-	
+
 	@Value("${img.prefix.client.profile}")
 	private String prefix;
-	
+
 	@Value("${img.profile.size}")
 	private Integer size;
-	
+
 	public List<Cliente> findAll() {
 		return clienteRepository.findAll();
 	}
@@ -66,25 +66,24 @@ public class ClienteService {
 
 	public Cliente findById(Integer id) {
 		User user = UserService.getAuthenticatedUser();
-		
+
 		if (user == null || (!user.hasHole(Perfil.ADMIN) && !id.equals(user.getId()))) {
-			throw new AuthorizationException("Acesso negado!"); 
+			throw new AuthorizationException("Acesso negado!");
 		}
 
 		Optional<Cliente> cliente = clienteRepository.findById(id);
-		return cliente.orElseThrow(() -> new ObjectNotFoundException(
-				"Objeto não encontrado! Id: " + id + ", Tipo: " + Cliente.class.getName()));
+		return cliente.orElseThrow(() -> new ObjectNotFoundException("Objeto não encontrado! Id: " + id + ", Tipo: " + Cliente.class.getName()));
 	}
-	
+
 	@Transactional
 	public Cliente insert(Cliente cliente) {
 		cliente.setId(null);
-		
+
 		Cliente clienteSalvo = clienteRepository.save(cliente);
-		
+
 		cliente.setEnderecos(cliente.getEnderecos().stream().map(e -> e.setCliente(clienteSalvo)).collect(Collectors.toList()));
 		enderecoRepository.saveAll(cliente.getEnderecos());
-		
+
 		return clienteSalvo;
 	}
 
@@ -100,49 +99,60 @@ public class ClienteService {
 		try {
 			clienteRepository.deleteById(id);
 		} catch (DataIntegrityViolationException e) {
-			throw new DataIntegrityException(
-					"O cliente " + cliente.getNome() + " nao pode ser excluido pois possui pedido(s) vinculado(s)");
+			throw new DataIntegrityException("O cliente " + cliente.getNome() + " nao pode ser excluido pois possui pedido(s) vinculado(s)");
 		}
 	}
 
 	public Cliente findByEmail(String email) {
-		return clienteRepository.findByEmail(email);
-	}
-	
-	public URI uploadProfilePicture(MultipartFile multipartFile) {
 		User user = UserService.getAuthenticatedUser();
-		
-		if (user == null) {
-			throw new AuthorizationException("Acesso negado!"); 
+
+		if (user == null || (!user.hasHole(Perfil.ADMIN) && !email.equals(user.getUsername()))) {
+			throw new AuthorizationException("Acesso negado!");
 		}
 		
+		Cliente cliente = clienteRepository.findByEmail(email);
+		
+		if (cliente == null) {
+			throw new ObjectNotFoundException("Cliente " + email + " não encontrado!");
+		}
+		
+		return cliente;
+	}
+
+	public URI uploadProfilePicture(MultipartFile multipartFile) {
+		User user = UserService.getAuthenticatedUser();
+
+		if (user == null) {
+			throw new AuthorizationException("Acesso negado!");
+		}
+
 		BufferedImage image = imageService.getJpgImageFromFile(multipartFile);
 		image = imageService.cropSquare(image);
 		image = imageService.resize(image, size);
-		
+
 		String fileName = prefix + user.getId() + ".jpg";
-		
+
 		return s3Service.uploadFile(imageService.getInputStream(image, "jpg"), fileName, "image");
 	}
-	
+
 	public Cliente fromDTO(ClienteDTO dto) {
 		String senha = bCryptPasswordEncoder.encode(dto.getSenha());
-		
+
 		Cliente cliente = new Cliente(dto.getId(), dto.getNome(), dto.getEmail(), dto.getCpfOuCnpj(), TipoCliente.toEnum(dto.getTipo()), senha);
-		
+
 		if (!dto.getEnderecos().isEmpty()) {
 			List<Endereco> enderecos = dto.getEnderecos().stream().map(e -> new Endereco(e)).collect(Collectors.toList());
 
 			cliente.getEnderecos().addAll(enderecos);
 		}
-		
+
 		if (!dto.getTelefones().isEmpty()) {
 			cliente.getTelefones().addAll(dto.getTelefones());
 		}
-		
+
 		return cliente;
 	}
-	
+
 	public Cliente fromDTO(ClienteUpdateDTO dto) {
 		return new Cliente(null, dto.getNome(), dto.getEmail(), null, null, null);
 	}
@@ -151,7 +161,7 @@ public class ClienteService {
 		if (!cliente.getEmail().isEmpty()) {
 			clienteSave.setEmail(cliente.getEmail());
 		}
-		
+
 		if (!cliente.getNome().isEmpty()) {
 			clienteSave.setNome(cliente.getNome());
 		}
