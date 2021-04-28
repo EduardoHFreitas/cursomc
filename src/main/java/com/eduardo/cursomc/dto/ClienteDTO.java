@@ -44,7 +44,6 @@ public class ClienteDTO implements Serializable {
 	@NotEmpty(message = "O cliente deve possuir ao menos um telefone cadastrado")
 	private Set<String> telefones = new HashSet<>();
 	
-	@NotEmpty(message = "O cliente deve possuir ao menos um perfil")
 	private Set<Integer> perfis = new HashSet<>();
 
 	public ClienteDTO() {
