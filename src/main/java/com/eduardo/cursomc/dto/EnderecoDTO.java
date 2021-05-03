@@ -4,6 +4,7 @@ import java.io.Serializable;
 
 import javax.validation.constraints.NotEmpty;
 
+import com.eduardo.cursomc.domain.Cidade;
 import com.eduardo.cursomc.domain.Endereco;
 
 public class EnderecoDTO implements Serializable {
@@ -27,17 +28,19 @@ public class EnderecoDTO implements Serializable {
 	@NotEmpty(message = "A cidade e obrigatoria")
 	private Integer cidadeId;
 	
-
+	private CidadeDTO cidade;
+	
 	public EnderecoDTO() {
 	}
 
-	public EnderecoDTO(String logradouro, String numero, String complemento, String bairro, String cep, Integer cidadeId) {
+	public EnderecoDTO(String logradouro, String numero, String complemento, String bairro, String cep, Integer cidadeId, Cidade cidade) {
 		this.logradouro = logradouro;
 		this.numero = numero;
 		this.complemento = complemento;
 		this.bairro = bairro;
 		this.cep = cep;
 		this.cidadeId = cidadeId;
+		this.cidade = new CidadeDTO(cidade);
 	}
 	
 	public EnderecoDTO(Endereco endereco) {
@@ -47,6 +50,7 @@ public class EnderecoDTO implements Serializable {
 		this.bairro = endereco.getBairro();
 		this.cep = endereco.getCep();
 		this.cidadeId = (endereco.getCidade() == null ? null : endereco.getCidade().getId());
+		this.cidade = (endereco.getCidade() == null ? null : new CidadeDTO(endereco.getCidade()));
 	}
 
 	public String getLogradouro() {
@@ -95,5 +99,13 @@ public class EnderecoDTO implements Serializable {
 
 	public void setCidadeId(Integer cidadeId) {
 		this.cidadeId = cidadeId;
+	}
+
+	public CidadeDTO getCidade() {
+		return cidade;
+	}
+
+	public void setCidade(CidadeDTO cidade) {
+		this.cidade = cidade;
 	}
 }
