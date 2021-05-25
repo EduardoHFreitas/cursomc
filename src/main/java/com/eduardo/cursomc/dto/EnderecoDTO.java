@@ -11,6 +11,8 @@ public class EnderecoDTO implements Serializable {
 
 	private static final long serialVersionUID = 1L;
 
+	private Integer id;
+	
 	@NotEmpty(message = "O logradouro e obrigatorio")
 	private String logradouro;
 
@@ -33,7 +35,8 @@ public class EnderecoDTO implements Serializable {
 	public EnderecoDTO() {
 	}
 
-	public EnderecoDTO(String logradouro, String numero, String complemento, String bairro, String cep, Integer cidadeId, Cidade cidade) {
+	public EnderecoDTO(Integer id, String logradouro, String numero, String complemento, String bairro, String cep, Integer cidadeId, Cidade cidade) {
+		this.id = id;
 		this.logradouro = logradouro;
 		this.numero = numero;
 		this.complemento = complemento;
@@ -44,6 +47,7 @@ public class EnderecoDTO implements Serializable {
 	}
 	
 	public EnderecoDTO(Endereco endereco) {
+		this.id = endereco.getId();
 		this.logradouro = endereco.getLogradouro();
 		this.numero = endereco.getNumero();
 		this.complemento = endereco.getComplemento();
@@ -51,6 +55,14 @@ public class EnderecoDTO implements Serializable {
 		this.cep = endereco.getCep();
 		this.cidadeId = (endereco.getCidade() == null ? null : endereco.getCidade().getId());
 		this.cidade = (endereco.getCidade() == null ? null : new CidadeDTO(endereco.getCidade()));
+	}
+
+	public Integer getId() {
+		return id;
+	}
+
+	public void setId(Integer id) {
+		this.id = id;
 	}
 
 	public String getLogradouro() {
